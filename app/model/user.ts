@@ -35,7 +35,7 @@ module.exports = (app) => {
 
   User.edit = async function (id: number, name: string, age: number) {
     return await this.update(
-      { name: name, age: age ?? 1, created_at: Date.now(), updated_at: Date.now() },
+      { name: name, age: age ?? 1, updated_at: Date.now() },
       { where: { id: id } }
     )
       // .success(function () {
@@ -81,11 +81,6 @@ module.exports = (app) => {
       }
     );
   };
-
-  // don't use arraw function
-  // User.prototype.logSignin = async function() {
-  //   return await this.update({ last_sign_in_at: new Date() });
-  // }
 
   return User;
 };
