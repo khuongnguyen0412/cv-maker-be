@@ -14,4 +14,7 @@ export default (app: Application) => {
   
   // ====== User ======
   apiV1.resources('users', '/users', middleware.auth(), controller.api.v1.user);
+
+  // ====== Cv ======
+  apiV1.resources('cvs', '/cvs', middleware.auth(), controller.api.v1.cv);
 };
