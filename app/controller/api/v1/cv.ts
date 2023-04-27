@@ -58,7 +58,7 @@ export default class CvController extends Controller {
         skills,
         experince,
         projects,
-        files[0].filename,
+        files[0]?.filename,
         files[0]
       );
       if (result) {
