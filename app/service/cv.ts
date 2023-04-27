@@ -55,7 +55,7 @@ export default class CV extends Service {
       gender,
       certifications,
       objective,
-      skills,
+      skills.split(","),
       experince,
       projects,
       avatar
