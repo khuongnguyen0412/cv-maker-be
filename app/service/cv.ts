@@ -29,30 +29,37 @@ export default class CV extends Service {
 
     cloudinary.config(this.config.cloudinary);
 
-    await cloudinary.uploader.upload(path, async (_, result) => {
-      if (result) {
-        // Remove image local
-        await fs.unlinkSync(path);
-        await this.ctx.model.Cv.add(
-          userId,
-          name,
-          phone,
-          email,
-          address,
-          gender,
-          certifications,
-          objective,
-          skills,
-          experince,
-          projects,
-          result.url
-        );
-        return true;
-      } else {
-        return false;
+    const uploaded = await cloudinary.uploader.upload(
+      path,
+      async (_, result) => {
+        if (result) {
+          // Remove image local
+          await fs.unlinkSync(path);
+          avatar = result.url;
+        } else {
+          return false;
+        }
       }
-    });
-    return true;
+    );
+
+    if (!uploaded) {
+      return false;
+    }
+
+    return await this.ctx.model.Cv.add(
+      userId,
+      name,
+      phone,
+      email,
+      address,
+      gender,
+      certifications,
+      objective,
+      skills,
+      experince,
+      projects,
+      avatar
+    );
   }
 
   public async update(
