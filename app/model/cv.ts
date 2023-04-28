@@ -50,7 +50,7 @@ module.exports = (app) => {
       avatar,
     }).then(function (result) {
       if (result) {
-        return true;
+        return result;
       } else {
         return false;
       }
