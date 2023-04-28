@@ -34,6 +34,7 @@ export default class CvController extends Controller {
       fields: {
         userId,
         name,
+        jonTitle,
         phone,
         email,
         address,
@@ -49,6 +50,7 @@ export default class CvController extends Controller {
       const result = await ctx.service.cv.add(
         userId,
         name,
+        jonTitle,
         phone,
         email,
         address,
@@ -78,6 +80,7 @@ export default class CvController extends Controller {
       files,
       fields: {
         name,
+        jonTitle,
         phone,
         email,
         address,
@@ -93,6 +96,7 @@ export default class CvController extends Controller {
       const result = await ctx.service.cv.update(
         id,
         name,
+        jonTitle,
         phone,
         email,
         address,

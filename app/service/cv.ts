@@ -12,6 +12,7 @@ export default class CV extends Service {
   public async add(
     userId: number,
     name: string,
+    jobTitle: string,
     phone: string,
     email: string,
     address: string,
@@ -49,6 +50,7 @@ export default class CV extends Service {
     return await this.ctx.model.Cv.add(
       userId,
       name,
+      jobTitle,
       phone,
       email,
       address,
@@ -65,6 +67,7 @@ export default class CV extends Service {
   public async update(
     id: number,
     name: string,
+    jobTitle: string,
     phone: string,
     email: string,
     address: string,
@@ -90,13 +93,14 @@ export default class CV extends Service {
           const resultUpdate = await this.ctx.model.Cv.edit(
             id,
             name,
+            jobTitle,
             phone,
             email,
             address,
             gender,
             certifications,
             objective,
-            skills,
+            skills.split(","),
             experince,
             projects,
             result.url
@@ -110,13 +114,14 @@ export default class CV extends Service {
       const result = await this.ctx.model.Cv.edit(
         id,
         name,
+        jobTitle,
         phone,
         email,
         address,
         gender,
         certifications,
         objective,
-        skills,
+        skills.split(","),
         experince,
         projects,
         null
