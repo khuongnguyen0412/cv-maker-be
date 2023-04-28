@@ -119,6 +119,17 @@ export default class CvController extends Controller {
     }
   }
 
+  public async generatePDF() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    const result = await ctx.service.cv.generatePDF(id);
+    if (!result) {
+      ctx.helper.response.error({ ctx });
+    } else {
+      ctx.helper.response.success({ ctx });
+    }
+  }
+
   public async destroy() {
     const { ctx } = this;
     const { id } = ctx.params;
