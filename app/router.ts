@@ -17,4 +17,5 @@ export default (app: Application) => {
 
   // ====== Cv ======
   apiV1.resources('cvs', '/cvs', middleware.auth(), controller.api.v1.cv);
+  apiV1.post('/cvs/generate-pdf/:id', middleware.auth(), controller.api.v1.cv.generatePDF);
 };
