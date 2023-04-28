@@ -5,6 +5,7 @@ module.exports = (app) => {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     userId: { type: INTEGER, references: "users", referencesKey: "id" },
     name: STRING(255),
+    jobTitle: STRING(255),
     phone: STRING(10),
     email: STRING(255),
     address: STRING(255),
@@ -20,6 +21,7 @@ module.exports = (app) => {
   Cv.add = async function (
     userId: number,
     name: string,
+    jobTitle: string,
     phone: string,
     email: string,
     address: string,
@@ -34,6 +36,7 @@ module.exports = (app) => {
     return await this.create({
       userId,
       name,
+      jobTitle,
       phone,
       email,
       address,
@@ -64,6 +67,7 @@ module.exports = (app) => {
   Cv.edit = async function (
     id: number,
     name: string,
+    jobTitle: string,
     phone: string,
     email: string,
     address: string,
@@ -77,6 +81,7 @@ module.exports = (app) => {
   ) {
     const cv = {
       name,
+      jobTitle,
       phone,
       email,
       address,
