@@ -16,6 +16,7 @@ module.exports = (app) => {
     experince: JSON,
     projects: JSON,
     avatar: STRING,
+    path: STRING,
   });
 
   Cv.add = async function (
@@ -98,6 +99,10 @@ module.exports = (app) => {
     );
 
     return await this.update(filterCv, { where: { id: id } });
+  };
+
+  Cv.editPath = async function (id: number, path: string) {
+    return await this.update({ path }, { where: { id: id } });
   };
 
   Cv.getAll = async function (pageIndex: number, pageSize: number) {
