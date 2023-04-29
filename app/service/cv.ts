@@ -231,14 +231,13 @@ export default class CV extends Service {
         "YYYY-MM-DD_HH-mm-ss"
       )}.pdf`;
       const s3 = new S3(this.ctx);
-      s3.putObject(pdfBuf, key).then(async (res) => {
-        if (res) {
-          await this.ctx.model.Cv.editPath(id, key);
-          return true;
-        } else {
-          return false;
-        }
-      });
+      const res = await s3.putObject(pdfBuf, key);
+      if (res) {
+        await this.ctx.model.Cv.editPath(id, key);
+        return true;
+      } else {
+        return false;
+      }
     } catch (error) {
       return false;
     }
