@@ -45,4 +45,41 @@ export default class S3 extends Service {
       return error;
     }
   }
+
+  async getObject(key: string) {
+    const { app } = this;
+    const {
+      s3: { bucket: defaultBucket },
+    } = app.config.aws;
+    try {
+      const client = this.client();
+      const res = await client
+        .getObject({
+          Bucket: defaultBucket,
+          Key: key,
+        })
+        .promise();
+      return res.Body;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async downSign(key) {
+    const { app } = this;
+    const {
+      s3: { bucket: defaultBucket },
+    } = app.config.aws;
+    try {
+      const client = this.client();
+      const res = await client
+        .getSignedUrl("getObject", {
+          Bucket: defaultBucket,
+          Key: key,
+        });
+      return res;
+    } catch (error) {
+      return error;
+    }
+  }
 }
