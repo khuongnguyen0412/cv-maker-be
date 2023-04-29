@@ -44,6 +44,7 @@ export default class CvController extends Controller {
         skills,
         experince,
         projects,
+        templateId,
       },
     } = await asyncBusboy(ctx.req);
     try {
@@ -61,7 +62,8 @@ export default class CvController extends Controller {
         experince,
         projects,
         files[0]?.filename,
-        files[0]
+        files[0],
+        templateId
       );
       if (result) {
         ctx.helper.response.success({ ctx, data: result });
@@ -90,6 +92,7 @@ export default class CvController extends Controller {
         skills,
         experince,
         projects,
+        templateId,
       },
     } = await asyncBusboy(ctx.req);
     try {
@@ -107,7 +110,8 @@ export default class CvController extends Controller {
         experince,
         projects,
         files[0]?.filename || undefined,
-        files[0] || undefined
+        files[0] || undefined,
+        templateId
       );
       if (result) {
         ctx.helper.response.success({ ctx });
