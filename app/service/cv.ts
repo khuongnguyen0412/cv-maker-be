@@ -1,6 +1,6 @@
 import { Service } from "egg";
+import moment from "moment";
 import S3 from "./thirdparty/aws/S3";
-import moment from 'moment';
 const util = require("util");
 const fs = require("fs");
 const stream = require("stream");
@@ -227,7 +227,9 @@ export default class CV extends Service {
       let pdfBuf = await libre.convertAsync(buf, "pdf", undefined);
 
       // Upload S3
-      const key = `cvs/CV_${cv.name}_${moment().format('YYYY-MM-DD_HH-mm-ss')}.pdf`;
+      const key = `cvs/CV_${cv.name}_${moment().format(
+        "YYYY-MM-DD_HH-mm-ss"
+      )}.pdf`;
       const s3 = new S3(this.ctx);
       s3.putObject(pdfBuf, key).then(async (res) => {
         if (res) {
@@ -242,7 +244,9 @@ export default class CV extends Service {
     }
   }
 
-  public async downloadPDF(url: string) {
-    return url;
+  public async downloadPDF(key: string) {
+    const s3 = new S3(this.ctx);
+    const data = await s3.downSign(key);
+    return data;
   }
 }
