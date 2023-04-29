@@ -7,8 +7,8 @@ const cloudinary = require("cloudinary").v2;
 const PizZip = require("pizzip");
 const Docxtemplater = require("docxtemplater");
 const path = require("path");
-const libre = require('libreoffice-convert');
-libre.convertAsync = require('util').promisify(libre.convert);
+const libre = require("libreoffice-convert");
+libre.convertAsync = require("util").promisify(libre.convert);
 
 /**
  * CV Service
@@ -28,7 +28,8 @@ export default class CV extends Service {
     experince: string,
     projects: string,
     avatar: string,
-    file: any
+    file: any,
+    templateId: number
   ) {
     const path = `./images/${avatar}`;
     await pipeline(file, fs.createWriteStream(path));
@@ -65,7 +66,8 @@ export default class CV extends Service {
       skills.split(","),
       experince,
       projects,
-      avatar
+      avatar,
+      templateId
     );
   }
 
@@ -83,7 +85,8 @@ export default class CV extends Service {
     experince: string,
     projects: string,
     avatar: string,
-    file: any
+    file: any,
+    templateId: number
   ) {
     if (file) {
       const path = `./images/${avatar}`;
@@ -108,7 +111,8 @@ export default class CV extends Service {
             skills.split(","),
             experince,
             projects,
-            result.url
+            result.url,
+            templateId
           );
           return resultUpdate;
         } else {
@@ -129,7 +133,8 @@ export default class CV extends Service {
         skills.split(","),
         experince,
         projects,
-        null
+        null,
+        templateId
       );
       return result;
     }
@@ -153,10 +158,21 @@ export default class CV extends Service {
 
   public async generatePDF(id: number) {
     try {
-      const cv = await this.ctx.model.Cv.findById(id);
+      const cv = await this.ctx.model.Cv.findOne({
+        where: {
+          id: id,
+        },
+        include: [
+          {
+            model: this.ctx.model.Template,
+            attributes: ["name"],
+          },
+        ],
+        raw: true,
+      });
 
       const content = fs.readFileSync(
-        path.resolve(__dirname, "../../templates/template.docx"),
+        path.resolve(__dirname, `../../templates/${cv["template.name"]}.docx`),
         "binary"
       );
 
@@ -168,7 +184,7 @@ export default class CV extends Service {
       });
 
       // Format Data
-      const experinceFormat = cv.dataValues.experince?.map((item) => {
+      const experinceFormat = cv.experince?.map((item) => {
         return {
           fromto: item.fromto.join(" - "),
           position: item.position,
@@ -177,7 +193,7 @@ export default class CV extends Service {
         };
       });
 
-      const projectsFormat = cv.dataValues.projects?.map((item) => {
+      const projectsFormat = cv.projects?.map((item) => {
         return {
           fromto: item.fromto.join(" - "),
           customer: item.customer,
@@ -189,10 +205,13 @@ export default class CV extends Service {
       });
 
       doc.render({
-        ...cv.dataValues,
-        skills: cv.dataValues.skills?.join(", "),
+        ...cv,
+        skills: cv.skills?.join(", "),
         experince: experinceFormat,
         projects: projectsFormat,
+        hasExperince: experinceFormat ? true : false,
+        hasProjects: projectsFormat ? true : false,
+        hasCertifications: cv.certifications ? true : false,
       });
 
       const buf = doc.getZip().generate({
@@ -204,13 +223,13 @@ export default class CV extends Service {
 
       // Convert docx to pdf
 
-      const keyTmpPath = `./tmp/CV_${cv.dataValues.name}`;
+      const keyTmpPath = `./tmp/CV_${cv.name}`;
 
       // Convert it to pdf format with undefined filter (see Libreoffice docs about filter)
-      let pdfBuf = await libre.convertAsync(buf, 'pdf', undefined);
+      let pdfBuf = await libre.convertAsync(buf, "pdf", undefined);
 
       fs.writeFileSync(
-        path.resolve(__dirname, `../../tmp/CV_${cv.dataValues.name}.pdf`),
+        path.resolve(__dirname, `../../tmp/CV_${cv.name}.pdf`),
         pdfBuf
       );
 
@@ -222,7 +241,7 @@ export default class CV extends Service {
         async (err, result) => {
           if (result) {
             // Remove image local
-            await fs.unlinkSync(`./tmp/CV_${cv.dataValues.name}.pdf`);
+            await fs.unlinkSync(`./tmp/CV_${cv.name}.pdf`);
             // Update path
             return await this.ctx.model.Cv.editPath(id, result.url);
           } else {

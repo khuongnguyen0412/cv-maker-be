@@ -17,6 +17,7 @@ module.exports = (app) => {
     projects: JSON,
     avatar: STRING,
     path: STRING,
+    templateId: INTEGER
   });
 
   Cv.add = async function (
@@ -32,7 +33,8 @@ module.exports = (app) => {
     skills: string,
     experince: string,
     projects: string,
-    avatar: string
+    avatar: string,
+    templateId: number
   ) {
     return await this.create({
       userId,
@@ -48,9 +50,10 @@ module.exports = (app) => {
       experince,
       projects,
       avatar,
+      templateId,
     }).then(function (result) {
       if (result) {
-        return true;
+        return result;
       } else {
         return false;
       }
@@ -78,7 +81,8 @@ module.exports = (app) => {
     skills: string,
     experince: string,
     projects: string,
-    avatar: string
+    avatar: string,
+    templateId: number
   ) {
     const cv = {
       name,
@@ -93,6 +97,7 @@ module.exports = (app) => {
       experince,
       projects,
       avatar,
+      templateId,
     };
     const filterCv = Object.fromEntries(
       Object.entries(cv).filter(([_, v]) => v != null)
@@ -139,6 +144,10 @@ module.exports = (app) => {
       }
     );
   };
+
+  Cv.associate = function() {
+    app.model.Cv.belongsTo(app.model.Template);
+  }
 
   return Cv;
 };

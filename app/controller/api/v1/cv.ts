@@ -34,7 +34,7 @@ export default class CvController extends Controller {
       fields: {
         userId,
         name,
-        jonTitle,
+        jobTitle,
         phone,
         email,
         address,
@@ -44,13 +44,14 @@ export default class CvController extends Controller {
         skills,
         experince,
         projects,
+        templateId,
       },
     } = await asyncBusboy(ctx.req);
     try {
       const result = await ctx.service.cv.add(
         userId,
         name,
-        jonTitle,
+        jobTitle,
         phone,
         email,
         address,
@@ -61,10 +62,11 @@ export default class CvController extends Controller {
         experince,
         projects,
         files[0]?.filename,
-        files[0]
+        files[0],
+        templateId
       );
       if (result) {
-        ctx.helper.response.success({ ctx });
+        ctx.helper.response.success({ ctx, data: result });
       } else {
         ctx.helper.response.error({ ctx });
       }
@@ -90,6 +92,7 @@ export default class CvController extends Controller {
         skills,
         experince,
         projects,
+        templateId,
       },
     } = await asyncBusboy(ctx.req);
     try {
@@ -107,7 +110,8 @@ export default class CvController extends Controller {
         experince,
         projects,
         files[0]?.filename || undefined,
-        files[0] || undefined
+        files[0] || undefined,
+        templateId
       );
       if (result) {
         ctx.helper.response.success({ ctx });
