@@ -136,12 +136,12 @@ export default class CvController extends Controller {
 
   public async downloadPDF() {
     const { ctx } = this;
-    const { url } = ctx.request.body;
-    const result = await ctx.service.cv.downloadPDF(url);
-    if (!result) {
+    const { key } = ctx.request.body;
+    const url = await ctx.service.cv.downloadPDF(key);
+    if (!url) {
       ctx.helper.response.error({ ctx });
     } else {
-      ctx.helper.response.success({ ctx });
+      ctx.helper.response.success({ ctx, data: { url } });
     }
   }
 
