@@ -12,6 +12,16 @@ export default (appInfo: EggAppInfo) => {
     password: "aA123!@#",
   };
 
+  config.aws = {
+    accessKeyId: "AKIA3DWHIWJAACHALOFY",
+    secretAccessKey: "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",
+    s3: {
+      region: "ap-southeast-1",
+      bucket: "cv-maker-vi",
+      cdn: "http://cv-maker-vi.s3-website-ap-southeast-1.amazonaws.com/",
+    },
+  };
+
   // override config from framework / plugin
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + "_1672212752156_9470";
