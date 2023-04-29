@@ -1,4 +1,6 @@
 import { Service } from "egg";
+import S3 from "./thirdparty/aws/S3";
+import moment from 'moment';
 const util = require("util");
 const fs = require("fs");
 const stream = require("stream");
@@ -222,37 +224,25 @@ export default class CV extends Service {
       });
 
       // Convert docx to pdf
-
-      const keyTmpPath = `./tmp/CV_${cv.name}`;
-
-      // Convert it to pdf format with undefined filter (see Libreoffice docs about filter)
       let pdfBuf = await libre.convertAsync(buf, "pdf", undefined);
 
-      fs.writeFileSync(
-        path.resolve(__dirname, `../../tmp/CV_${cv.name}.pdf`),
-        pdfBuf
-      );
-
-      // Upload could
-      cloudinary.config(this.config.cloudinary);
-      await cloudinary.uploader.upload(
-        `${keyTmpPath}.pdf`,
-        { resource_type: "auto", use_filename: true },
-        async (err, result) => {
-          if (result) {
-            // Remove image local
-            await fs.unlinkSync(`./tmp/CV_${cv.name}.pdf`);
-            // Update path
-            return await this.ctx.model.Cv.editPath(id, result.url);
-          } else {
-            return err;
-          }
+      // Upload S3
+      const key = `cvs/CV_${cv.name}_${moment().format('YYYY-MM-DD_HH-mm-ss')}.pdf`;
+      const s3 = new S3(this.ctx);
+      s3.putObject(pdfBuf, key).then(async (res) => {
+        if (res) {
+          await this.ctx.model.Cv.editPath(id, key);
+          return true;
+        } else {
+          return false;
         }
-      );
-
-      return true;
+      });
     } catch (error) {
       return false;
     }
+  }
+
+  public async downloadPDF(url: string) {
+    return url;
   }
 }
