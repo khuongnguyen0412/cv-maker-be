@@ -4,21 +4,21 @@ export default (appInfo: EggAppInfo) => {
   const config = {} as PowerPartial<EggAppConfig>;
 
   config.sequelize = {
-    dialect: "mysql",
-    database: "cv_maker",
-    host: "127.0.0.1",
+    dialect: "",
+    database: "",
+    host: "",
     port: 3306,
-    username: "root",
-    password: "aA123!@#",
+    username: "",
+    password: "",
   };
 
   config.aws = {
-    accessKeyId: "AKIA3DWHIWJAACHALOFY",
-    secretAccessKey: "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",
+    accessKeyId: "",
+    secretAccessKey: "",
     s3: {
-      region: "ap-southeast-1",
-      bucket: "cv-maker-vi",
-      cdn: "http://cv-maker-vi.s3-website-ap-southeast-1.amazonaws.com/",
+      region: "",
+      bucket: "",
+      cdn: "",
     },
   };
 
@@ -91,9 +91,9 @@ export default (appInfo: EggAppInfo) => {
   }
 
   config.cloudinary = {
-    cloud_name: 'nonefd',
-    api_key: '457141667853418',
-    api_secret: '6QTXwDrXNFTTHrhg2XajW-nJbxk'
+    cloud_name: '',
+    api_key: '',
+    api_secret: ''
   };
 
   // the return config will combines to EggAppConfig
